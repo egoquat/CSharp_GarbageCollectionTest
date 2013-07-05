@@ -61,6 +61,7 @@ namespace GargabeCollectTest
     public class RutineClass
     {
         int _reference = 0;
+        const int _dataCount = 20;
 
         public void Run()
         {
@@ -70,7 +71,7 @@ namespace GargabeCollectTest
 
             List<UserClassA> listUserGroup = new List<UserClassA>();
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < _dataCount; i++)
             {
                 UserClassA userclass = new UserClassA(_reference);
                 listUserGroup.Add(userclass);
@@ -82,7 +83,7 @@ namespace GargabeCollectTest
 
             List<UserClassB> listUserGroupB = new List<UserClassB>();
             Random random = new Random();
-            for (int i = 0; i < 10; ++i)
+            for (int i = 0; i < _dataCount; ++i)
             {
                 UserClassB userclass = new UserClassB(_reference);
                 listUserGroupB.Add(userclass);
@@ -94,7 +95,7 @@ namespace GargabeCollectTest
 
             Console.WriteLine("2.RutineClass GC.TotalMemory({0}kb)", GC.GetTotalMemory(false) * 0.001f);
             Console.WriteLine("2.RutineClass GC.TotalMemory({0}kb)", GC.GetTotalMemory(true) * 0.001f);
-            Console.WriteLine("1.RutineClass GC.TotalMemory({0}kb)", GC.GetTotalMemory(false) * 0.001f);
+            Console.WriteLine("2.RutineClass GC.TotalMemory({0}kb)", GC.GetTotalMemory(false) * 0.001f);
         }
 
         public RutineClass( int reference )
@@ -107,13 +108,13 @@ namespace GargabeCollectTest
     {
         static void Main(string[] args)
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 1; i++)
             {
                 RutineClass rutine = new RutineClass(i);
                 rutine.Run();
                 rutine = null;
+                //GC.Collect(0, GCCollectionMode.Forced);
                 GC.Collect();
-                
             }
 
             return;
