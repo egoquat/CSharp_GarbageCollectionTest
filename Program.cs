@@ -18,19 +18,19 @@ namespace GargabeCollectTest
 
         public void Run()
         {
-            Console.WriteLine("Call (" + _parent + ")UserClassA.Run(" + (_reference) + ")");
+            Console.WriteLine("Call (" + _parent + ")/A.Run(" + (_reference) + ")");
         }
 
         public UserClassA(int parent)
         {
             _parent = parent;
             _reference = _referenceCount++;
-            Console.WriteLine("Call (" + _parent + ")UserClassA.Construction (" + (_reference) + ")");
+            Console.WriteLine("Call (" + _parent + ")/A.Construction (" + (_reference) + ")");
         }
 
         ~UserClassA() 
         {
-            Console.WriteLine("Call (" + _parent + ")UserClassA.Destruction (" + (_reference) + ")");
+            Console.WriteLine("Call (" + _parent + ")/A.Destruction (" + (_reference) + ")");
         }
     }
 
@@ -42,26 +42,26 @@ namespace GargabeCollectTest
 
         public void Run()
         {
-            Console.WriteLine("Call (" + _parent + ")UserClassB.Run(" + (_reference) + ")");
+            Console.WriteLine("Call (" + _parent + ")/B.Run (" + (_reference) + ")");
         }
 
         public UserClassB(int parent)
         {
             _reference = _referenceCount++;
             _parent = parent;
-            Console.WriteLine("Call ("+_parent+")UserClassB.Construction (" + (_reference) + ")");
+            Console.WriteLine("Call ("+_parent+")/B.Construction (" + (_reference) + ")");
         }
 
         ~UserClassB()
         {
-            Console.WriteLine("Call (" + _parent + ")UserClassB.Destruction (" + (_reference) + ")");
+            Console.WriteLine("Call (" + _parent + ")/B.Destruction (" + (_reference) + ")");
         }
     }
 
     public class RutineClass
     {
         int _reference = 0;
-        const int _dataCount = 20;
+        const int _dataCount = 5;
 
         public void Run()
         {
@@ -78,7 +78,7 @@ namespace GargabeCollectTest
             }
 
             listUserGroup.ForEach(u => u.Run());
-            //listUserGroup = null;
+            listUserGroup.Clear();
             //GC.Collect();
 
             List<UserClassB> listUserGroupB = new List<UserClassB>();
@@ -90,7 +90,7 @@ namespace GargabeCollectTest
             }
 
             listUserGroupB.ForEach(u => u.Run());
-            //listUserGroup = null;
+            listUserGroupB.Clear();
             //GC.Collect();
 
             Console.WriteLine("2.RutineClass GC.TotalMemory({0}kb)", GC.GetTotalMemory(false) * 0.001f);
@@ -113,11 +113,16 @@ namespace GargabeCollectTest
                 RutineClass rutine = new RutineClass(i);
                 rutine.Run();
                 rutine = null;
-                //GC.Collect(0, GCCollectionMode.Forced);
-                GC.Collect();
+                GC.Collect(0, GCCollectionMode.Forced);
+                GC.WaitForFullGCComplete();
+                //GC.Collect();
             }
 
             return;
         }
+        
     }
 }
+
+
+
